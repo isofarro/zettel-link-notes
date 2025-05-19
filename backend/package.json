@@ -10,17 +10,17 @@
     "lint": "eslint . --ext .ts"
   },
   "dependencies": {
-    "@types/node": "^22.15.19",
-    "@types/restify": "^8.5.12",
-    "@types/restify-cors-middleware": "^1.0.5",
-    "@types/sqlite3": "^5.1.0",
     "restify": "^11.1.0",
-    "restify-cors-middleware2": "^2.2.1",
+    "restify-cors-middleware2": "^2.1.0",
     "sqlite3": "^5.1.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },
   "devDependencies": {
+    "@types/node": "^22.15.19",
+    "@types/restify": "^8.5.12",
+    "@types/restify-cors-middleware": "^1.0.5",
+    "@types/sqlite3": "^5.1.0",
     "@typescript-eslint/eslint-plugin": "^8.32.1",
     "@typescript-eslint/parser": "^8.32.1",
     "nodemon": "^3.1.10"

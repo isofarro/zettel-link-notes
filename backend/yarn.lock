@@ -1634,7 +1634,7 @@ real-require@^0.2.0:
   resolved "https://registry.yarnpkg.com/real-require/-/real-require-0.2.0.tgz#209632dea1810be2ae063a6ac084fee7e33fba78"
   integrity sha512-57frrGM/OCTLqLOAh0mhVA9VBMHd+9U7Zb2THMGdBUoZVOtGbJzjxsYGDJ3A9AYYCP4hn6y1TVbaOfzWtm5GFg==
 
-restify-cors-middleware2@^2.2.1:
+restify-cors-middleware2@^2.1.0:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/restify-cors-middleware2/-/restify-cors-middleware2-2.2.1.tgz#8bfa428ee68f314d6d7b69f09296290dde4e6ebd"
   integrity sha512-j7Hvufd5dv699OeVuSk6YUH/HMga6a4A1zriGc6En/SDE3kzeDvQF82a3LMcVa+GaUfXxQa+TpVP8LRtcdIJWg==
