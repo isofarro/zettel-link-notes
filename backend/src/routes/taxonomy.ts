@@ -9,7 +9,8 @@ export function taxonomyRoutes(server: Server) {
     try {
       const { name, description } = req.body;
       const id = await taxonomyRepo.createTaxonomy({ name, description });
-      res.send(201, { id, name, description });
+      const taxonomy = await taxonomyRepo.getTaxonomyBySlug(taxonomyRepo.createSlug(name));
+      res.send(201, taxonomy); // This will include id, name, description, and slug
     } catch (err: unknown) {
       const error = err instanceof Error ? err.message : 'An unknown error occurred';
       res.send(500, { error });
@@ -26,21 +27,32 @@ export function taxonomyRoutes(server: Server) {
     }
   });
 
-  server.post('/taxonomies/:taxonomyId/terms', async (req: Request, res: Response) => {
+  server.post('/taxonomies/:taxonomySlug/terms', async (req: Request, res: Response) => {
     try {
       const { name, description } = req.body;
-      const taxonomy_id = parseInt(req.params.taxonomyId);
-      const id = await taxonomyRepo.createTerm({ taxonomy_id, name, description });
-      res.send(201, { id, taxonomy_id, name, description });
+      const taxonomy = await taxonomyRepo.getTaxonomyBySlug(req.params.taxonomySlug);
+      
+      if (!taxonomy) {
+        res.send(404, { error: 'Taxonomy not found' });
+        return;
+      }
+
+      const id = await taxonomyRepo.createTerm({ 
+        taxonomy_id: taxonomy.id, 
+        name, 
+        description 
+      });
+      
+      res.send(201, { id, taxonomy_id: taxonomy.id, name, description });
     } catch (err: unknown) {
       const error = err instanceof Error ? err.message : 'An unknown error occurred';
       res.send(500, { error });
     }
   });
 
-  server.get('/taxonomies/:taxonomyId/terms', async (req: Request, res: Response) => {
+  server.get('/taxonomies/:taxonomySlug/terms', async (req: Request, res: Response) => {
     try {
-      const terms = await taxonomyRepo.getTermsByTaxonomyId(parseInt(req.params.taxonomyId));
+      const terms = await taxonomyRepo.getTermsByTaxonomySlug(req.params.taxonomySlug);
       res.send(200, terms);
     } catch (err: unknown) {
       const error = err instanceof Error ? err.message : 'An unknown error occurred';

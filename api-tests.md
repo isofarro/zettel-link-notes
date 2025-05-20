@@ -25,7 +25,15 @@ curl -X POST http://localhost:3000/taxonomies \
   -d '{"name": "Topics", "description": "Main topics for notes"}'
 ```
 
-Expected response will include the created taxonomy with an ID.
+Expected response will include the created taxonomy with an ID, name, description, and automatically generated slug:
+```json
+{
+  "id": 1,
+  "name": "Topics",
+  "description": "Main topics for notes",
+  "slug": "topics"
+}
+```
 
 ### List All Taxonomies
 
@@ -36,9 +44,9 @@ curl http://localhost:3000/taxonomies
 
 ### Create a Term
 
-Add a term to a taxonomy (using taxonomy ID 1):
+Add a term to a taxonomy (using taxonomy slug 'topics'):
 ```bash
-curl -X POST http://localhost:3000/taxonomies/1/terms \
+curl -X POST http://localhost:3000/taxonomies/topics/terms \
   -H "Content-Type: application/json" \
   -d '{"name": "Programming", "description": "Programming related notes"}'
 ```
@@ -47,7 +55,7 @@ curl -X POST http://localhost:3000/taxonomies/1/terms \
 
 Get all terms for a taxonomy:
 ```bash
-curl http://localhost:3000/taxonomies/1/terms
+curl http://localhost:3000/taxonomies/topics/terms
 ```
 
 ## Notes Operations

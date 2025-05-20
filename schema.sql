@@ -2,7 +2,8 @@
 CREATE TABLE IF NOT EXISTS taxonomies (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
-    description TEXT NOT NULL
+    description TEXT NOT NULL,
+    slug TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS taxonomy_terms (
