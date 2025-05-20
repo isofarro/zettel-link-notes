@@ -54,7 +54,7 @@ curl http://localhost:3000/taxonomies/1/terms
 
 ### Create a Note
 
-Create a new note with tags and metadata:
+Create a new note with terms and metadata:
 ```bash
 curl -X POST http://localhost:3000/notes \
   -H "Content-Type: application/json" \
@@ -62,11 +62,13 @@ curl -X POST http://localhost:3000/notes \
     "note_id": "note1",
     "title": "First Note",
     "content": "This is my first note",
-    "terms": [1],
-    "metadata": [
-      {"key": "author", "value": "Mike"},
-      {"key": "category", "value": "test"}
-    ]
+    "terms": {
+      "Topics": ["Programming"]
+    },
+    "metadata": {
+      "author": "Mike",
+      "category": "test"
+    }
   }'
 ```
 
@@ -75,6 +77,26 @@ curl -X POST http://localhost:3000/notes \
 Retrieve a note by its ID:
 ```bash
 curl http://localhost:3000/notes/note1
+```
+
+Expected response will include:
+```json
+{
+  "id": 1,
+  "note_id": "note1",
+  "title": "First Note",
+  "content": "This is my first note",
+  "terms": {
+    "Topics": ["Programming"]
+  },
+  "metadata": {
+    "author": "Mike",
+    "category": "test"
+  },
+  "created_at": "2024-03-14T12:00:00.000Z",
+  "updated_at": "2024-03-14T12:00:00.000Z",
+  "deleted_at": null
+}
 ```
 
 ## Testing Flow
@@ -105,3 +127,5 @@ curl http://localhost:3000/notes/note1
 - All POST requests must include the `Content-Type: application/json` header
 - The database is automatically initialized when the server starts
 - Term IDs start from 1 and increment sequentially
+- Metadata is stored as a JSON object directly in the notes table
+- Terms are stored as an array of term IDs directly in the notes table

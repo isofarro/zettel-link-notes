@@ -13,18 +13,19 @@ export function notesRoutes(server: Server) {
         note_id,
         title,
         content,
+        terms: JSON.stringify(terms || []),
+        metadata: JSON.stringify(metadata || {}),
         deleted_at: null
       });
 
-      if (terms?.length) {
-        await noteRepo.addNoteTerms(noteId, terms);
-      }
-
-      if (metadata?.length) {
-        await noteRepo.addNoteMetadata(noteId, metadata);
-      }
-
+      // Get the created note and parse its metadata before sending
       const note = await noteRepo.getNoteByNoteId(note_id);
+      if (note) {
+        // Parse metadata if it's a string
+        if (typeof note.metadata === 'string') {
+          note.metadata = JSON.parse(note.metadata);
+        }
+      }
       res.send(201, note);
     } catch (err: unknown) {
       const error = err instanceof Error ? err.message : 'An unknown error occurred';
@@ -38,6 +39,10 @@ export function notesRoutes(server: Server) {
       if (!note) {
         res.send(404, { error: 'Note not found' });
         return;
+      }
+      // Parse metadata if it's a string
+      if (typeof note.metadata === 'string') {
+        note.metadata = JSON.parse(note.metadata);
       }
       res.send(200, note);
     } catch (err: unknown) {
