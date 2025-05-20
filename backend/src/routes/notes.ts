@@ -18,12 +18,15 @@ export function notesRoutes(server: Server) {
         deleted_at: null
       });
 
-      // Get the created note and parse its metadata before sending
+      // Get the created note
       const note = await noteRepo.getNoteByNoteId(note_id);
       if (note) {
-        // Parse metadata if it's a string
+        // Parse both metadata and terms if they're strings
         if (typeof note.metadata === 'string') {
           note.metadata = JSON.parse(note.metadata);
+        }
+        if (typeof note.terms === 'string') {
+          note.terms = JSON.parse(note.terms);
         }
       }
       res.send(201, note);
@@ -40,9 +43,12 @@ export function notesRoutes(server: Server) {
         res.send(404, { error: 'Note not found' });
         return;
       }
-      // Parse metadata if it's a string
+      // Parse both metadata and terms if they're strings
       if (typeof note.metadata === 'string') {
         note.metadata = JSON.parse(note.metadata);
+      }
+      if (typeof note.terms === 'string') {
+        note.terms = JSON.parse(note.terms);
       }
       res.send(200, note);
     } catch (err: unknown) {

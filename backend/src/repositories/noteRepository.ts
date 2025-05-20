@@ -32,20 +32,13 @@ export class NoteRepository {
           n.title,
           n.content,
           n.metadata,
+          n.terms,
           n.created_at,
           n.updated_at,
           n.deleted_at,
-          n.current_version_id,
-          GROUP_CONCAT(DISTINCT json_object(
-            'taxonomy', tax.name,
-            'term', tt.name
-          )) as term_objects
+          n.current_version_id
         FROM notes n
-        LEFT JOIN json_each(n.terms) terms ON 1=1
-        LEFT JOIN taxonomy_terms tt ON tt.id = json_extract(terms.value, '$')
-        LEFT JOIN taxonomies tax ON tax.id = tt.taxonomy_id
         WHERE n.note_id = ?
-        GROUP BY n.id
       `, [noteId], (err, row: any) => {
         if (err) reject(err);
         if (!row) {
@@ -53,37 +46,27 @@ export class NoteRepository {
           return;
         }
 
-        // Extract fields we need to process separately
-        const { term_objects, metadata: metadataStr, ...baseNote } = row;
+        // Create a clean base object without the fields we'll process
+        const { metadata: metadataStr, terms: termsStr, ...baseNote } = row;
         
-        // Parse metadata into an object
-        const metadata = JSON.parse(metadataStr || '{}');
-        
-        // Process terms into taxonomy-grouped structure
-        const termsByTaxonomy: Record<string, string[]> = {};
-        if (term_objects) {
-          const termObjects = term_objects.split(',').map((t: string) => {
-            try {
-              return JSON.parse(t.trim());
-            } catch (e) {
-              console.error('Failed to parse term object:', t);
-              return null;
-            }
-          }).filter(Boolean);
+        try {
+          // Parse metadata and terms into objects
+          const metadata = typeof metadataStr === 'string' ? JSON.parse(metadataStr) : metadataStr || {};
+          const terms = typeof termsStr === 'string' ? JSON.parse(termsStr) : termsStr || {};
           
-          termObjects.forEach((t: { taxonomy: string; term: string }) => {
-            if (!termsByTaxonomy[t.taxonomy]) {
-              termsByTaxonomy[t.taxonomy] = [];
-            }
-            termsByTaxonomy[t.taxonomy].push(t.term);
+          resolve({ 
+            ...baseNote,
+            metadata,
+            terms
+          });
+        } catch (e) {
+          console.error('Error parsing JSON:', e);
+          resolve({
+            ...baseNote,
+            metadata: {},
+            terms: {}
           });
         }
-        
-        resolve({ 
-          ...baseNote,
-          metadata,  // Add the parsed metadata object
-          terms: termsByTaxonomy
-        });
       });
     });
   }
