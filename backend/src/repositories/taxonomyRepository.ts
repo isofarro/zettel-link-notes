@@ -40,8 +40,8 @@ export class TaxonomyRepository {
   async createTerm(term: Omit<TaxonomyTerm, 'id'>): Promise<number> {
     return new Promise((resolve, reject) => {
       this.db.run(
-        'INSERT INTO taxonomy_terms (taxonomy_id, name, description) VALUES (?, ?, ?)',
-        [term.taxonomy_id, term.name, term.description],
+        'INSERT INTO taxonomy_terms (taxonomy_id, name, description, slug) VALUES (?, ?, ?, ?)',
+        [term.taxonomy_id, term.name, term.description, term.slug],
         function(err) {
           if (err) reject(err);
           resolve(this.lastID);

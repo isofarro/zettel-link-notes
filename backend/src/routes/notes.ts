@@ -9,14 +9,13 @@ const noteService = new NoteService(noteRepo);
 export function notesRoutes(server: Server) {
   server.post('/notes', async (req: Request, res: Response) => {
     try {
-      const { note_id, title, content, terms, metadata } = req.body;
+      const { zettel_id, title, content } = req.body;
       
       const note = await noteService.createNote({
-        note_id,
+        zettel_id,
         title,
         content,
-        terms,
-        metadata,
+        revision_id: 1,
         deleted_at: null
       });
 
@@ -31,9 +30,9 @@ export function notesRoutes(server: Server) {
     }
   });
 
-  server.get('/notes/:noteId', async (req: Request, res: Response) => {
+  server.get('/notes/:zettelId', async (req: Request, res: Response) => {
     try {
-      const note = await noteService.getNoteByNoteId(req.params.noteId);
+      const note = await noteService.getNoteByZettelId(req.params.zettelId);
       if (!note) {
         res.send(404, { error: 'Note not found' });
         return;

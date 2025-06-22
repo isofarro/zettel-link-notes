@@ -1,40 +1,29 @@
 export interface Note {
   id: number;
-  note_id: string;
+  zettel_id: string;
+  revision_id: number;
   title: string;
   content: string;
-  metadata: string; // JSON string
-  terms: string;   // JSON string
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
-  current_version_id: number;
 }
 
-// Remove NoteMetadata and NoteTerm interfaces as they're no longer needed
-export interface NoteVersion {
+export interface NoteRevision {
   id: number;
   note_id: number;
+  revision_number: number;
+  zettel_id: string;
   title: string;
   content: string;
-  created_at: string;
-}
-
-export interface NoteMetadata {
-  id: number;
-  note_id: number;
-  key: string;
-  value: string;
-}
-
-export interface NoteTerm {
-  note_id: number;
-  term_id: number;
+  valid_from: string;
+  valid_to: string | null;
 }
 
 export interface NoteReference {
   parent_note_id: number;
   child_note_id: number;
+  title: string | null;
 }
 
 export interface Taxonomy {
@@ -49,4 +38,5 @@ export interface TaxonomyTerm {
   taxonomy_id: number;
   name: string;
   description: string;
+  slug: string;
 }
