@@ -26,6 +26,10 @@ export class NoteService {
     return this.noteRepo.getNoteByZettelId(vaultName, zettelId);
   }
 
+  async listNotes(vaultName: string): Promise<Note[]> {
+    return this.noteRepo.listNotes(vaultName);
+  }
+
   async updateNote(
     vaultName: string,
     zettelId: string,

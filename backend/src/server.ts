@@ -36,9 +36,9 @@ const noteRepo = new NoteRepository(vaultManager);
 const taxonomyRepo = new TaxonomyRepository(vaultManager);
 
 // Initialize services
-const vaultService = new VaultService(vaultManager, noteRepo);
 const noteService = new NoteService(noteRepo);
 const taxonomyService = new TaxonomyService(taxonomyRepo);
+const vaultService = new VaultService(vaultManager, noteService);
 
 // Routes - register vault routes first for proper matching
 vaultRoutes(server, vaultService);

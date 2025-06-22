@@ -1,11 +1,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { VaultManager } from '../db';
-import { NoteRepository } from '../repositories/noteRepository';
+import { NoteService } from './noteService';
+import { Note } from '../../../shared/types';
 
 export interface VaultDetails {
   name: string;
-  notes: any[];
+  notes: Note[];
 }
 
 export interface VaultInfo {
@@ -18,7 +19,7 @@ export class VaultService {
 
   constructor(
     private vaultManager: VaultManager,
-    private noteRepo: NoteRepository
+    private noteService: NoteService
   ) {
     this.dataDir = path.join(__dirname, '../../../data');
   }
@@ -60,7 +61,7 @@ export class VaultService {
       throw new Error('Vault not found');
     }
 
-    const notes = await this.noteRepo.listNotes(vaultName);
+    const notes = await this.noteService.listNotes(vaultName);
     return {
       name: vaultName,
       notes,

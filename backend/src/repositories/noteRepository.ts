@@ -73,25 +73,18 @@ export class NoteRepository {
     });
   }
 
-  async listNotes(
-    vaultName: string
-  ): Promise<Array<Omit<Note, 'id' | 'revision_id' | 'content' | 'updated_at' | 'deleted_at'>>> {
+  async listNotes(vaultName: string): Promise<Note[]> {
     const db = await this.getDb(vaultName);
     return new Promise((resolve, reject) => {
       db.all(
         `
-        SELECT zettel_id, title, created_at
+        SELECT id, zettel_id, revision_id, title, content, created_at, updated_at, deleted_at
         FROM notes
         WHERE deleted_at IS NULL
         ORDER BY created_at DESC
         `,
         [],
-        (
-          err,
-          rows: Array<
-            Omit<Note, 'id' | 'revision_id' | 'content' | 'updated_at' | 'deleted_at'>
-          > | null
-        ) => {
+        (err, rows: Note[] | null) => {
           if (err) reject(err);
           resolve(rows || []);
         }
