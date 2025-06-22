@@ -48,7 +48,7 @@ Add a term to a taxonomy (using taxonomy slug 'topics'):
 ```bash
 curl -X POST http://localhost:3000/taxonomies/topics/terms \
   -H "Content-Type: application/json" \
-  -d '{"name": "Programming", "description": "Programming related notes"}'
+  -d '{"slug": "programming", "name": "Programming", "description": "Programming related notes"}'
 ```
 
 ### List Terms
@@ -62,45 +62,32 @@ curl http://localhost:3000/taxonomies/topics/terms
 
 ### Create a Note
 
-Create a new note with terms and metadata:
+Create a new note:
 ```bash
 curl -X POST http://localhost:3000/notes \
   -H "Content-Type: application/json" \
   -d '{
-    "note_id": "note1",
+    "zettel_id": "202403141200",
     "title": "First Note",
-    "content": "This is my first note",
-    "terms": {
-      "Topics": ["Programming"]
-    },
-    "metadata": {
-      "author": "Mike",
-      "category": "test"
-    }
+    "content": "---\ntitle: First Note\ndate: 2024-03-14\n---\n\nThis is my first note with front matter."
   }'
 ```
 
 ### Get a Note
 
-Retrieve a note by its ID:
+Retrieve a note by its zettel ID:
 ```bash
-curl http://localhost:3000/notes/note1
+curl http://localhost:3000/notes/202403141200
 ```
 
 Expected response will include:
 ```json
 {
   "id": 1,
-  "note_id": "note1",
+  "zettel_id": "202403141200",
+  "revision_id": 1,
   "title": "First Note",
-  "content": "This is my first note",
-  "terms": {
-    "Topics": ["Programming"]
-  },
-  "metadata": {
-    "author": "Mike",
-    "category": "test"
-  },
+  "content": "---\ntitle: First Note\ndate: 2024-03-14\n---\n\nThis is my first note with front matter.",
   "created_at": "2024-03-14T12:00:00.000Z",
   "updated_at": "2024-03-14T12:00:00.000Z",
   "deleted_at": null
@@ -119,8 +106,8 @@ Expected response will include:
    - First run the health check to ensure the API is running
    - Create a taxonomy (it will get ID 1)
    - Create some terms in that taxonomy
-   - Create a note using those terms
-   - Retrieve the note to verify all relationships are properly saved
+   - Create a note with front matter
+   - Retrieve the note to verify it was saved correctly
 
 ## Response Status Codes
 
@@ -134,6 +121,6 @@ Expected response will include:
 - The server runs on port 3000 by default
 - All POST requests must include the `Content-Type: application/json` header
 - The database is automatically initialized when the server starts
-- Term IDs start from 1 and increment sequentially
-- Metadata is stored as a JSON object directly in the notes table
-- Terms are stored as an array of term IDs directly in the notes table
+- Notes use a zettel ID format (typically timestamp-based) for identification
+- Content includes front matter in YAML format at the top of the markdown
+- Revisions are automatically tracked when notes are updated

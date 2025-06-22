@@ -8,6 +8,36 @@ This repository is a mono-repository. The backend is in the `backend` directory,
 
 ## Key features
 
-Create and edit notes, linking notes together. A note is aware of what it links to and what links to it. Notes are searchable by text search, and by it's associated tags and metadata. Notes have a created and updated date. Notes, and their metadata are versioned, the app tracks the history of notes, their links, and tags.
+Create and edit notes, linking notes together using a Zettelkasten-inspired system. Each note has a unique zettel ID (typically timestamp-based) and maintains bidirectional links, so a note knows both what it links to and what links to it. Notes are searchable by text content and their links.
 
-A note is a markdown file with frontmatter. The frontmatter is a yaml block at the top of the file. The app supports custom taxonomies that can be created on the fly by adding it to the  note's frontmatter.
+Notes are written in markdown with YAML front matter. The front matter contains metadata like title and date. The app maintains a complete revision history of each note, tracking changes to both content and title over time.
+
+## Note Structure
+
+A note consists of:
+- A unique zettel ID
+- Title
+- Content (markdown with YAML front matter)
+- Creation and update timestamps
+- Revision tracking
+- Bidirectional links to other notes
+
+Example note content:
+```markdown
+---
+title: My First Note
+date: 2024-03-14
+---
+
+This is the content of my note.
+
+It can link to [[202403141205]] another note.
+```
+
+## Data Storage
+
+The app uses SQLite with the following key tables:
+- `notes`: Stores current note data
+- `note_revisions`: Tracks the complete history of note changes
+- `note_references`: Maintains bidirectional links between notes
+- `taxonomies` and `taxonomy_terms`: Supports custom taxonomies for organizing notes
