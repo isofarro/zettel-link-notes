@@ -10,9 +10,6 @@
     "forceConsistentCasingInFileNames": true,
     "composite": true
   },
-  "include": [
-    "src/**/*",
-    "../shared/**/*"
-  ],
+  "include": ["src/**/*", "../shared/**/*"],
   "exclude": ["node_modules"]
 }
