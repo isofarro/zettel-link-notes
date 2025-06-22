@@ -1,12 +1,21 @@
 import { Database } from 'sqlite3';
 import { Note } from '../../../shared/types';
+import { VaultManager } from '../db';
 
 export class NoteRepository {
-  constructor(private db: Database) {}
+  constructor(private vaultManager: VaultManager) {}
 
-  async createNote(note: Omit<Note, 'id' | 'created_at' | 'updated_at'>): Promise<number> {
+  private async getDb(vaultName: string): Promise<Database> {
+    return this.vaultManager.getVaultDb(vaultName);
+  }
+
+  async createNote(
+    vaultName: string,
+    note: Omit<Note, 'id' | 'created_at' | 'updated_at'>
+  ): Promise<number> {
+    const db = await this.getDb(vaultName);
     return new Promise((resolve, reject) => {
-      this.db.run(
+      db.run(
         'INSERT INTO notes (zettel_id, title, content, revision_id) VALUES (?, ?, ?, ?)',
         [note.zettel_id, note.title, note.content, note.revision_id],
         function (err) {
@@ -17,9 +26,10 @@ export class NoteRepository {
     });
   }
 
-  async getNoteByZettelId(zettelId: string): Promise<Note | null> {
+  async getNoteByZettelId(vaultName: string, zettelId: string): Promise<Note | null> {
+    const db = await this.getDb(vaultName);
     return new Promise((resolve, reject) => {
-      this.db.get(
+      db.get(
         `
         SELECT 
           n.id,
@@ -43,11 +53,13 @@ export class NoteRepository {
   }
 
   async createNoteRevision(
+    vaultName: string,
     noteId: number,
     note: Note & { revision_number: number }
   ): Promise<number> {
+    const db = await this.getDb(vaultName);
     return new Promise((resolve, reject) => {
-      this.db.run(
+      db.run(
         `
         INSERT INTO note_revisions (note_id, revision_number, zettel_id, title, content, valid_from)
         VALUES (?, ?, ?, ?, ?, datetime('now'))
@@ -61,9 +73,10 @@ export class NoteRepository {
     });
   }
 
-  async updateNote(note: Note): Promise<boolean> {
+  async updateNote(vaultName: string, note: Note): Promise<boolean> {
+    const db = await this.getDb(vaultName);
     return new Promise((resolve, reject) => {
-      this.db.run(
+      db.run(
         "UPDATE notes SET title = ?, content = ?, revision_id = ?, updated_at = datetime('now') WHERE zettel_id = ?",
         [note.title, note.content, note.revision_id, note.zettel_id],
         function (err) {

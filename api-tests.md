@@ -1,31 +1,23 @@
 # API Tests for Zettel Link Notes
 
-This document contains curl commands for testing the Zettel Link Notes API endpoints.
-
 ## Health Check
-
-Test the API health:
 ```bash
-curl http://localhost:3000/health
-```
-
-Expected response:
-```json
-{"status":"ok"}
+curl http://localhost:3000/_health
 ```
 
 ## Taxonomy Operations
 
 ### Create a Taxonomy
-
-Create a new taxonomy for organizing notes:
 ```bash
-curl -X POST http://localhost:3000/taxonomies \
+curl -X POST http://localhost:3000/test/taxonomies \
   -H "Content-Type: application/json" \
-  -d '{"name": "Topics", "description": "Main topics for notes"}'
+  -d '{
+    "name": "Topics",
+    "description": "Main topics for notes"
+  }'
 ```
 
-Expected response will include the created taxonomy with an ID, name, description, and automatically generated slug:
+Expected response:
 ```json
 {
   "id": 1,
@@ -35,118 +27,90 @@ Expected response will include the created taxonomy with an ID, name, descriptio
 }
 ```
 
-### List All Taxonomies
-
-Get all available taxonomies:
+### List Taxonomies
 ```bash
-curl http://localhost:3000/taxonomies
+curl http://localhost:3000/test/taxonomies
 ```
 
 ### Create a Term
-
-Add a term to a taxonomy (using taxonomy slug 'topics'):
 ```bash
-curl -X POST http://localhost:3000/taxonomies/topics/terms \
+curl -X POST http://localhost:3000/test/taxonomies/topics/terms \
   -H "Content-Type: application/json" \
-  -d '{"slug": "programming", "name": "Programming", "description": "Programming related notes"}'
+  -d '{
+    "name": "Programming",
+    "description": "Programming related notes",
+    "slug": "programming"
+  }'
+```
+
+Expected response:
+```json
+{
+  "id": 1,
+  "taxonomy_id": 1,
+  "name": "Programming",
+  "description": "Programming related notes",
+  "slug": "programming"
+}
 ```
 
 ### List Terms
-
-Get all terms for a taxonomy:
 ```bash
-curl http://localhost:3000/taxonomies/topics/terms
+curl http://localhost:3000/test/taxonomies/topics/terms
 ```
 
-## Notes Operations
+## Note Operations
 
 ### Create a Note
-
-Create a new note:
 ```bash
-curl -X POST http://localhost:3000/notes \
+curl -X POST http://localhost:3000/test/notes \
   -H "Content-Type: application/json" \
   -d '{
-    "zettel_id": "202403141200",
-    "title": "First Note",
-    "content": "---\ntitle: First Note\ndate: 2024-03-14\n---\n\nThis is my first note with front matter."
+    "zettel_id": "202401001",
+    "title": "My First Note",
+    "content": "---\ntags: [programming, typescript]\n---\n\nThis is the content of my first note."
   }'
+```
+
+Expected response:
+```json
+{
+  "id": 1,
+  "zettel_id": "202401001",
+  "revision_id": 1,
+  "title": "My First Note",
+  "content": "---\ntags: [programming, typescript]\n---\n\nThis is the content of my first note.",
+  "created_at": "2024-01-01T12:00:00.000Z",
+  "updated_at": "2024-01-01T12:00:00.000Z",
+  "deleted_at": null
+}
 ```
 
 ### Get a Note
-
-Retrieve a note by its zettel ID:
 ```bash
-curl http://localhost:3000/notes/202403141200
-```
-
-Expected response will include:
-```json
-{
-  "id": 1,
-  "zettel_id": "202403141200",
-  "revision_id": 1,
-  "title": "First Note",
-  "content": "---\ntitle: First Note\ndate: 2024-03-14\n---\n\nThis is my first note with front matter.",
-  "created_at": "2024-03-14T12:00:00.000Z",
-  "updated_at": "2024-03-14T12:00:00.000Z",
-  "deleted_at": null
-}
+curl http://localhost:3000/test/notes/202401001
 ```
 
 ### Update a Note
-
-Update an existing note by its zettel ID:
 ```bash
-curl -X PUT http://localhost:3000/notes/202403141200 \
+curl -X PUT http://localhost:3000/test/notes/202401001 \
   -H "Content-Type: application/json" \
   -d '{
-    "title": "Updated First Note",
-    "content": "---\ntitle: Updated First Note\ndate: 2024-03-14\nupdated: 2024-03-14\n---\n\nThis note has been updated with new content."
+    "title": "My Updated Note",
+    "content": "---\ntags: [programming, typescript, updated]\n---\n\nThis is the updated content of my first note."
   }'
 ```
 
-Expected response will include the updated note with an incremented revision_id:
+Expected response:
 ```json
 {
   "id": 1,
-  "zettel_id": "202403141200",
+  "zettel_id": "202401001",
   "revision_id": 2,
-  "title": "Updated First Note",
-  "content": "---\ntitle: Updated First Note\ndate: 2024-03-14\nupdated: 2024-03-14\n---\n\nThis note has been updated with new content.",
-  "created_at": "2024-03-14T12:00:00.000Z",
-  "updated_at": "2024-03-14T12:05:00.000Z",
+  "title": "My Updated Note",
+  "content": "---\ntags: [programming, typescript, updated]\n---\n\nThis is the updated content of my first note.",
+  "created_at": "2024-01-01T12:00:00.000Z",
+  "updated_at": "2024-01-01T12:30:00.000Z",
   "deleted_at": null
 }
 ```
-
-## Testing Flow
-
-1. Start the server:
-   ```bash
-   cd backend
-   yarn dev
-   ```
-
-2. Test sequence:
-   - First run the health check to ensure the API is running
-   - Create a taxonomy (it will get ID 1)
-   - Create some terms in that taxonomy
-   - Create a note with front matter
-   - Retrieve the note to verify it was saved correctly
-
-## Response Status Codes
-
-- 200: Successful GET request
-- 201: Successful POST request (resource created)
-- 404: Resource not found
-- 500: Server error
-
-## Notes
-
-- The server runs on port 3000 by default
-- All POST requests must include the `Content-Type: application/json` header
-- The database is automatically initialized when the server starts
-- Notes use a zettel ID format (typically timestamp-based) for identification
-- Content includes front matter in YAML format at the top of the markdown
-- Revisions are automatically tracked when notes are updated

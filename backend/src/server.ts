@@ -26,7 +26,7 @@ notesRoutes(server);
 taxonomyRoutes(server);
 
 // Basic health check endpoint
-server.get('/health', (req: restify.Request, res: restify.Response, next: restify.Next) => {
+server.get('/_health', (req: restify.Request, res: restify.Response, next: restify.Next) => {
   res.send(200, { status: 'ok' });
   return next();
 });

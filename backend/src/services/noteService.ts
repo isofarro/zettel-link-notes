@@ -4,8 +4,11 @@ import { NoteRepository } from '../repositories/noteRepository';
 export class NoteService {
   constructor(private noteRepo: NoteRepository) {}
 
-  async createNote(note: Omit<Note, 'id' | 'created_at' | 'updated_at'>): Promise<Note | null> {
-    const noteId = await this.noteRepo.createNote({
+  async createNote(
+    vaultName: string,
+    note: Omit<Note, 'id' | 'created_at' | 'updated_at'>
+  ): Promise<Note | null> {
+    const noteId = await this.noteRepo.createNote(vaultName, {
       ...note,
       deleted_at: null,
     });
@@ -14,20 +17,21 @@ export class NoteService {
     const noteForRevision = { ...note, id: noteId, revision_number: note.revision_id } as Note & {
       revision_number: number;
     };
-    await this.noteRepo.createNoteRevision(noteId, noteForRevision);
+    await this.noteRepo.createNoteRevision(vaultName, noteId, noteForRevision);
 
-    return this.noteRepo.getNoteByZettelId(note.zettel_id);
+    return this.noteRepo.getNoteByZettelId(vaultName, note.zettel_id);
   }
 
-  async getNoteByZettelId(zettelId: string): Promise<Note | null> {
-    return this.noteRepo.getNoteByZettelId(zettelId);
+  async getNoteByZettelId(vaultName: string, zettelId: string): Promise<Note | null> {
+    return this.noteRepo.getNoteByZettelId(vaultName, zettelId);
   }
 
   async updateNote(
+    vaultName: string,
     zettelId: string,
     updates: Pick<Note, 'title' | 'content'>
   ): Promise<Note | null> {
-    const existingNote = await this.getNoteByZettelId(zettelId);
+    const existingNote = await this.getNoteByZettelId(vaultName, zettelId);
     if (!existingNote) return null;
 
     const updatedNote = {
@@ -36,15 +40,15 @@ export class NoteService {
       revision_id: existingNote.revision_id + 1,
     };
 
-    const success = await this.noteRepo.updateNote(updatedNote);
+    const success = await this.noteRepo.updateNote(vaultName, updatedNote);
     if (!success) return null;
 
     // Create new revision
     const noteForRevision = { ...updatedNote, revision_number: updatedNote.revision_id } as Note & {
       revision_number: number;
     };
-    await this.noteRepo.createNoteRevision(existingNote.id, noteForRevision);
+    await this.noteRepo.createNoteRevision(vaultName, existingNote.id, noteForRevision);
 
-    return this.getNoteByZettelId(zettelId);
+    return this.getNoteByZettelId(vaultName, zettelId);
   }
 }
