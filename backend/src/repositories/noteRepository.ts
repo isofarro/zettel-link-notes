@@ -8,13 +8,8 @@ export class NoteRepository {
     return new Promise((resolve, reject) => {
       this.db.run(
         'INSERT INTO notes (zettel_id, title, content, revision_id) VALUES (?, ?, ?, ?)',
-        [
-          note.zettel_id,
-          note.title,
-          note.content,
-          note.revision_id
-        ],
-        function(err) {
+        [note.zettel_id, note.title, note.content, note.revision_id],
+        function (err) {
           if (err) reject(err);
           resolve(this.lastID);
         }
@@ -24,7 +19,8 @@ export class NoteRepository {
 
   async getNoteByZettelId(zettelId: string): Promise<Note | null> {
     return new Promise((resolve, reject) => {
-      this.db.get(`
+      this.db.get(
+        `
         SELECT 
           n.id,
           n.zettel_id,
@@ -36,31 +32,41 @@ export class NoteRepository {
           n.deleted_at
         FROM notes n
         WHERE n.zettel_id = ?
-      `, [zettelId], (err, row: Note | null) => {
-        if (err) reject(err);
-        resolve(row);
-      });
+      `,
+        [zettelId],
+        (err, row: Note | null) => {
+          if (err) reject(err);
+          resolve(row);
+        }
+      );
     });
   }
 
-  async createNoteRevision(noteId: number, note: Note & { revision_number: number }): Promise<number> {
+  async createNoteRevision(
+    noteId: number,
+    note: Note & { revision_number: number }
+  ): Promise<number> {
     return new Promise((resolve, reject) => {
-      this.db.run(`
+      this.db.run(
+        `
         INSERT INTO note_revisions (note_id, revision_number, zettel_id, title, content, valid_from)
         VALUES (?, ?, ?, ?, ?, datetime('now'))
-      `, [noteId, note.revision_number, note.zettel_id, note.title, note.content], function(err) {
-        if (err) reject(err);
-        resolve(this.lastID);
-      });
+      `,
+        [noteId, note.revision_number, note.zettel_id, note.title, note.content],
+        function (err) {
+          if (err) reject(err);
+          resolve(this.lastID);
+        }
+      );
     });
   }
 
   async updateNote(note: Note): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.db.run(
-        'UPDATE notes SET title = ?, content = ?, revision_id = ?, updated_at = datetime(\'now\') WHERE zettel_id = ?',
+        "UPDATE notes SET title = ?, content = ?, revision_id = ?, updated_at = datetime('now') WHERE zettel_id = ?",
         [note.title, note.content, note.revision_id, note.zettel_id],
-        function(err) {
+        function (err) {
           if (err) reject(err);
           resolve(this.changes > 0);
         }

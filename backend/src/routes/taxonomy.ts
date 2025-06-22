@@ -31,20 +31,20 @@ export function taxonomyRoutes(server: Server) {
     try {
       const { name, description, slug } = req.body;
       const taxonomy = await taxonomyRepo.getTaxonomyBySlug(req.params.taxonomySlug);
-      
+
       if (!taxonomy) {
         res.send(404, { error: 'Taxonomy not found' });
         return;
       }
 
       const termSlug = slug || taxonomyRepo.createSlug(name);
-      const id = await taxonomyRepo.createTerm({ 
-        taxonomy_id: taxonomy.id, 
+      const id = await taxonomyRepo.createTerm({
+        taxonomy_id: taxonomy.id,
         name,
         description,
-        slug: termSlug
+        slug: termSlug,
       });
-      
+
       res.send(201, { id, taxonomy_id: taxonomy.id, name, description, slug: termSlug });
     } catch (err: unknown) {
       const error = err instanceof Error ? err.message : 'An unknown error occurred';

@@ -10,7 +10,7 @@ if (!fs.existsSync(dbPath)) {
   fs.writeFileSync(dbPath, '');
 }
 
-export const db = new Database(dbPath, (err) => {
+export const db = new Database(dbPath, err => {
   if (err) {
     console.error('Database connection failed:', err);
     process.exit(1);
@@ -20,7 +20,7 @@ export const db = new Database(dbPath, (err) => {
 
 // Initialize database schema
 const schema = fs.readFileSync(path.join(__dirname, '../../schema.sql'), 'utf8');
-db.exec(schema, (err) => {
+db.exec(schema, err => {
   if (err) {
     console.error('Failed to initialize database schema:', err);
     process.exit(1);

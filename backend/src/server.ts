@@ -5,14 +5,14 @@ import { taxonomyRoutes } from './routes/taxonomy';
 
 const server = restify.createServer({
   name: 'zettel-link-notes-api',
-  version: '1.0.0'
+  version: '1.0.0',
 });
 
 // Configure CORS
 const cors = corsMiddleware({
   origins: ['*'], // Configure this appropriately for production
   allowHeaders: ['Authorization'],
-  exposeHeaders: ['Authorization']
+  exposeHeaders: ['Authorization'],
 });
 
 // Middleware

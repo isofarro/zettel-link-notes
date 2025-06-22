@@ -10,13 +10,13 @@ export function notesRoutes(server: Server) {
   server.post('/notes', async (req: Request, res: Response) => {
     try {
       const { zettel_id, title, content } = req.body;
-      
+
       const note = await noteService.createNote({
         zettel_id,
         title,
         content,
         revision_id: 1,
-        deleted_at: null
+        deleted_at: null,
       });
 
       if (!note) {
@@ -48,7 +48,7 @@ export function notesRoutes(server: Server) {
     try {
       const { title, content } = req.body;
       const note = await noteService.updateNote(req.params.zettelId, { title, content });
-      
+
       if (!note) {
         res.send(404, { error: 'Note not found' });
         return;

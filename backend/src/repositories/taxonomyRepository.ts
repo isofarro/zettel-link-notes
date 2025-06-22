@@ -5,7 +5,8 @@ export class TaxonomyRepository {
   constructor(private db: Database) {}
 
   public createSlug(name: string): string {
-    return name.toLowerCase()
+    return name
+      .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
   }
@@ -16,7 +17,7 @@ export class TaxonomyRepository {
       this.db.run(
         'INSERT INTO taxonomies (name, description, slug) VALUES (?, ?, ?)',
         [taxonomy.name, taxonomy.description, slug],
-        function(err) {
+        function (err) {
           if (err) reject(err);
           resolve(this.lastID);
         }
@@ -42,7 +43,7 @@ export class TaxonomyRepository {
       this.db.run(
         'INSERT INTO taxonomy_terms (taxonomy_id, name, description, slug) VALUES (?, ?, ?, ?)',
         [term.taxonomy_id, term.name, term.description, term.slug],
-        function(err) {
+        function (err) {
           if (err) reject(err);
           resolve(this.lastID);
         }
