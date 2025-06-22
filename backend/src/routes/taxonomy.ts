@@ -2,7 +2,7 @@ import { Server, Request, Response } from 'restify';
 import { TaxonomyRepository } from '../repositories/taxonomyRepository';
 export function taxonomyRoutes(server: Server, taxonomyRepo: TaxonomyRepository) {
   server.post(
-    { path: '/:vault/taxonomies\/?', name: 'createTaxonomy' },
+    { path: '/:vault/taxonomies', name: 'createTaxonomy' },
     async (req: Request, res: Response) => {
       try {
         const { vault } = req.params;
@@ -25,7 +25,7 @@ export function taxonomyRoutes(server: Server, taxonomyRepo: TaxonomyRepository)
   );
 
   server.get(
-    { path: '/:vault/taxonomies\/?', name: 'listTaxonomies' },
+    { path: '/:vault/taxonomies', name: 'listTaxonomies' },
     async (req: Request, res: Response) => {
       try {
         const { vault } = req.params;
@@ -39,7 +39,7 @@ export function taxonomyRoutes(server: Server, taxonomyRepo: TaxonomyRepository)
   );
 
   server.get(
-    { path: '/:vault/taxonomies/:taxonomySlug\/?', name: 'getTaxonomy' },
+    { path: '/:vault/taxonomies/:taxonomySlug', name: 'getTaxonomy' },
     async (req: Request, res: Response) => {
       try {
         const { vault, taxonomySlug } = req.params;

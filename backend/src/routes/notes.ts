@@ -4,7 +4,7 @@ import { NoteService } from '../services/noteService';
 export function notesRoutes(server: Server, noteRepo: NoteRepository) {
   const noteService = new NoteService(noteRepo);
   server.post(
-    { path: '/:vault/notes\/?', name: 'createNote' },
+    { path: '/:vault/notes', name: 'createNote' },
     async (req: Request, res: Response) => {
       try {
         const { vault } = req.params;
@@ -31,7 +31,7 @@ export function notesRoutes(server: Server, noteRepo: NoteRepository) {
   );
 
   server.get(
-    { path: '/:vault/notes/:zettelId\/?', name: 'getNote' },
+    { path: '/:vault/notes/:zettelId', name: 'getNote' },
     async (req: Request, res: Response) => {
       try {
         const { vault, zettelId } = req.params;
@@ -49,7 +49,7 @@ export function notesRoutes(server: Server, noteRepo: NoteRepository) {
   );
 
   server.put(
-    { path: '/:vault/notes/:zettelId\/?', name: 'updateNote' },
+    { path: '/:vault/notes/:zettelId', name: 'updateNote' },
     async (req: Request, res: Response) => {
       try {
         const { vault, zettelId } = req.params;

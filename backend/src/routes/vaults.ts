@@ -1,36 +1,29 @@
 import * as restify from 'restify';
-import * as fs from 'fs';
-import * as path from 'path';
 import { VaultManager } from '../db';
 import { NoteRepository } from '../repositories/noteRepository';
+import { VaultService } from '../services/vaultService';
 
 export function vaultRoutes(
   server: restify.Server,
   vaultManager: VaultManager,
   noteRepo: NoteRepository
 ) {
+  const vaultService = new VaultService(vaultManager, noteRepo);
+
   // List available vaults
   server.get(
     { path: '/', name: 'listVaults' },
     async (req: restify.Request, res: restify.Response) => {
       try {
-        const dataDir = path.join(__dirname, '../../../data');
-        if (!fs.existsSync(dataDir)) {
-          fs.mkdirSync(dataDir, { recursive: true });
-        }
-
-        const vaults = fs
-          .readdirSync(dataDir)
-          .filter(item => fs.statSync(path.join(dataDir, item)).isDirectory())
-          .map(vault => ({
-            name: vault,
-            url: `http://localhost:3000/${vault}`,
-          }));
-
+        const vaults = await vaultService.listVaults();
         res.send(200, vaults);
-      } catch (error) {
-        res.send(500, { error: 'Failed to list vaults' });
-        throw error;
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          res.send(500, { error: 'Failed to list vaults' });
+          throw error;
+        }
+        res.send(500, { error: 'An unexpected error occurred' });
+        throw new Error('Unknown error occurred');
       }
     }
   );
@@ -43,18 +36,22 @@ export function vaultRoutes(
         const { name } = req.body;
         if (!name) {
           res.send(400, { error: 'Vault name is required' });
+          return;
         }
 
-        // Initialize the vault (this will create the directory and database)
-        await vaultManager.getVaultDb(name);
-
-        res.send(201, {
-          name,
-          url: `http://localhost:3000/${name}`,
-        });
-      } catch (error) {
-        res.send(500, { error: 'Failed to create vault' });
-        throw error;
+        const vault = await vaultService.createVault(name);
+        res.send(201, vault);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          if (error.message === 'Vault name is required') {
+            res.send(400, { error: error.message });
+          } else {
+            res.send(500, { error: 'Failed to create vault' });
+          }
+          throw error;
+        }
+        res.send(500, { error: 'An unexpected error occurred' });
+        throw new Error('Unknown error occurred');
       }
     }
   );
@@ -64,23 +61,19 @@ export function vaultRoutes(
     { path: '/:vault', name: 'getVaultDetails' },
     async (req: restify.Request, res: restify.Response) => {
       try {
-        const vault = req.params.vault;
-        const dataDir = path.join(__dirname, '../../../data');
-        const vaultPath = path.join(dataDir, vault);
-
-        if (!fs.existsSync(vaultPath)) {
-          res.send(404, { error: 'Vault not found' });
-          return;
+        const vault = await vaultService.getVaultDetails(req.params.vault);
+        res.send(200, vault);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          if (error.message === 'Vault not found') {
+            res.send(404, { error: error.message });
+          } else {
+            res.send(500, { error: 'Failed to get vault details' });
+          }
+          throw error;
         }
-
-        const notes = await noteRepo.listNotes(vault);
-        res.send(200, {
-          name: vault,
-          notes,
-        });
-      } catch (error) {
-        res.send(500, { error: 'Failed to get vault details' });
-        throw error;
+        res.send(500, { error: 'An unexpected error occurred' });
+        throw new Error('Unknown error occurred');
       }
     }
   );
