@@ -43,4 +43,20 @@ export function notesRoutes(server: Server) {
       res.send(500, { error });
     }
   });
+
+  server.put('/notes/:zettelId', async (req: Request, res: Response) => {
+    try {
+      const { title, content } = req.body;
+      const note = await noteService.updateNote(req.params.zettelId, { title, content });
+      
+      if (!note) {
+        res.send(404, { error: 'Note not found' });
+        return;
+      }
+      res.send(200, note);
+    } catch (err: unknown) {
+      const error = err instanceof Error ? err.message : 'An unknown error occurred';
+      res.send(500, { error });
+    }
+  });
 }

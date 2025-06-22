@@ -94,6 +94,32 @@ Expected response will include:
 }
 ```
 
+### Update a Note
+
+Update an existing note by its zettel ID:
+```bash
+curl -X PUT http://localhost:3000/notes/202403141200 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Updated First Note",
+    "content": "---\ntitle: Updated First Note\ndate: 2024-03-14\nupdated: 2024-03-14\n---\n\nThis note has been updated with new content."
+  }'
+```
+
+Expected response will include the updated note with an incremented revision_id:
+```json
+{
+  "id": 1,
+  "zettel_id": "202403141200",
+  "revision_id": 2,
+  "title": "Updated First Note",
+  "content": "---\ntitle: Updated First Note\ndate: 2024-03-14\nupdated: 2024-03-14\n---\n\nThis note has been updated with new content.",
+  "created_at": "2024-03-14T12:00:00.000Z",
+  "updated_at": "2024-03-14T12:05:00.000Z",
+  "deleted_at": null
+}
+```
+
 ## Testing Flow
 
 1. Start the server:

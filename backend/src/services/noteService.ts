@@ -20,4 +20,24 @@ export class NoteService {
   async getNoteByZettelId(zettelId: string): Promise<Note | null> {
     return this.noteRepo.getNoteByZettelId(zettelId);
   }
+
+  async updateNote(zettelId: string, updates: Pick<Note, 'title' | 'content'>): Promise<Note | null> {
+    const existingNote = await this.getNoteByZettelId(zettelId);
+    if (!existingNote) return null;
+
+    const updatedNote = {
+      ...existingNote,
+      ...updates,
+      revision_id: existingNote.revision_id + 1
+    };
+
+    const success = await this.noteRepo.updateNote(updatedNote);
+    if (!success) return null;
+
+    // Create new revision
+    const noteForRevision = { ...updatedNote, revision_number: updatedNote.revision_id } as Note & { revision_number: number };
+    await this.noteRepo.createNoteRevision(existingNote.id, noteForRevision);
+
+    return this.getNoteByZettelId(zettelId);
+  }
 }

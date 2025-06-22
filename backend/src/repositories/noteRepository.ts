@@ -54,4 +54,17 @@ export class NoteRepository {
       });
     });
   }
+
+  async updateNote(note: Note): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.db.run(
+        'UPDATE notes SET title = ?, content = ?, revision_id = ?, updated_at = datetime(\'now\') WHERE zettel_id = ?',
+        [note.title, note.content, note.revision_id, note.zettel_id],
+        function(err) {
+          if (err) reject(err);
+          resolve(this.changes > 0);
+        }
+      );
+    });
+  }
 }
