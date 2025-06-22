@@ -6,6 +6,9 @@ import { vaultRoutes } from './routes/vaults';
 import { VaultManager } from './db';
 import { NoteRepository } from './repositories/noteRepository';
 import { TaxonomyRepository } from './repositories/taxonomyRepository';
+import { VaultService } from './services/vaultService';
+import { NoteService } from './services/noteService';
+import { TaxonomyService } from './services/taxonomyService';
 
 const server = restify.createServer({
   name: 'zettel-link-notes-api',
@@ -27,15 +30,20 @@ server.use(restify.plugins.bodyParser());
 server.use(restify.plugins.acceptParser(server.acceptable));
 server.use(restify.plugins.fullResponse());
 
-// Initialize vault manager and repositories
+// Initialize services and repositories
 const vaultManager = new VaultManager();
 const noteRepo = new NoteRepository(vaultManager);
 const taxonomyRepo = new TaxonomyRepository(vaultManager);
 
+// Initialize services
+const vaultService = new VaultService(vaultManager, noteRepo);
+const noteService = new NoteService(noteRepo);
+const taxonomyService = new TaxonomyService(taxonomyRepo);
+
 // Routes - register vault routes first for proper matching
-vaultRoutes(server, vaultManager, noteRepo);
-notesRoutes(server, noteRepo);
-taxonomyRoutes(server, taxonomyRepo);
+vaultRoutes(server, vaultService);
+notesRoutes(server, noteService);
+taxonomyRoutes(server, taxonomyService);
 
 // Start server
 const PORT = process.env.PORT || 3000;

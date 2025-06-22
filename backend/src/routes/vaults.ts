@@ -1,14 +1,10 @@
 import * as restify from 'restify';
-import { VaultManager } from '../db';
-import { NoteRepository } from '../repositories/noteRepository';
 import { VaultService } from '../services/vaultService';
 
 export function vaultRoutes(
   server: restify.Server,
-  vaultManager: VaultManager,
-  noteRepo: NoteRepository
+  vaultService: VaultService
 ) {
-  const vaultService = new VaultService(vaultManager, noteRepo);
 
   // List available vaults
   server.get(

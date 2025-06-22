@@ -1,8 +1,7 @@
 import { Server, Request, Response } from 'restify';
-import { NoteRepository } from '../repositories/noteRepository';
 import { NoteService } from '../services/noteService';
-export function notesRoutes(server: Server, noteRepo: NoteRepository) {
-  const noteService = new NoteService(noteRepo);
+
+export function notesRoutes(server: Server, noteService: NoteService) {
   server.post(
     { path: '/:vault/notes', name: 'createNote' },
     async (req: Request, res: Response) => {

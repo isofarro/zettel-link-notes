@@ -1,21 +1,14 @@
 import { Server, Request, Response } from 'restify';
-import { TaxonomyRepository } from '../repositories/taxonomyRepository';
-export function taxonomyRoutes(server: Server, taxonomyRepo: TaxonomyRepository) {
+import { TaxonomyService } from '../services/taxonomyService';
+
+export function taxonomyRoutes(server: Server, taxonomyService: TaxonomyService) {
   server.post(
     { path: '/:vault/taxonomies', name: 'createTaxonomy' },
     async (req: Request, res: Response) => {
       try {
         const { vault } = req.params;
         const { name, description } = req.body;
-        const slug = await taxonomyRepo.createSlug(vault, name);
-
-        const taxonomyId = await taxonomyRepo.createTaxonomy(vault, {
-          name,
-          description,
-          slug,
-        });
-
-        const taxonomy = await taxonomyRepo.getTaxonomyBySlug(vault, slug);
+        const taxonomy = await taxonomyService.createTaxonomy(vault, name, description);
         res.send(201, taxonomy);
       } catch (err: unknown) {
         const error = err instanceof Error ? err.message : 'An unknown error occurred';
@@ -29,7 +22,7 @@ export function taxonomyRoutes(server: Server, taxonomyRepo: TaxonomyRepository)
     async (req: Request, res: Response) => {
       try {
         const { vault } = req.params;
-        const taxonomies = await taxonomyRepo.listTaxonomies(vault);
+        const taxonomies = await taxonomyService.listTaxonomies(vault);
         res.send(200, taxonomies);
       } catch (err: unknown) {
         const error = err instanceof Error ? err.message : 'An unknown error occurred';
@@ -43,7 +36,7 @@ export function taxonomyRoutes(server: Server, taxonomyRepo: TaxonomyRepository)
     async (req: Request, res: Response) => {
       try {
         const { vault, taxonomySlug } = req.params;
-        const taxonomy = await taxonomyRepo.getTaxonomyBySlug(vault, taxonomySlug);
+        const taxonomy = await taxonomyService.getTaxonomy(vault, taxonomySlug);
         if (!taxonomy) {
           res.send(404, { error: 'Taxonomy not found' });
           return;
@@ -61,22 +54,13 @@ export function taxonomyRoutes(server: Server, taxonomyRepo: TaxonomyRepository)
       const { vault, taxonomySlug } = req.params;
       const { name, description } = req.body;
 
-      const taxonomy = await taxonomyRepo.getTaxonomyBySlug(vault, taxonomySlug);
+      const taxonomy = await taxonomyService.getTaxonomy(vault, taxonomySlug);
       if (!taxonomy) {
         res.send(404, { error: 'Taxonomy not found' });
         return;
       }
 
-      const slug = await taxonomyRepo.createSlug(vault, name);
-      const termId = await taxonomyRepo.createTerm(vault, {
-        taxonomy_id: taxonomy.id,
-        name,
-        description,
-        slug,
-      });
-
-      const terms = await taxonomyRepo.listTerms(vault, taxonomy.id);
-      const createdTerm = terms.find(term => term.id === termId);
+      const createdTerm = await taxonomyService.createTerm(vault, taxonomy.id, name, description);
       res.send(201, createdTerm);
     } catch (err: unknown) {
       const error = err instanceof Error ? err.message : 'An unknown error occurred';
@@ -87,13 +71,13 @@ export function taxonomyRoutes(server: Server, taxonomyRepo: TaxonomyRepository)
   server.get('/:vault/taxonomies/:taxonomySlug/terms', async (req: Request, res: Response) => {
     try {
       const { vault, taxonomySlug } = req.params;
-      const taxonomy = await taxonomyRepo.getTaxonomyBySlug(vault, taxonomySlug);
+      const taxonomy = await taxonomyService.getTaxonomy(vault, taxonomySlug);
       if (!taxonomy) {
         res.send(404, { error: 'Taxonomy not found' });
         return;
       }
 
-      const terms = await taxonomyRepo.listTerms(vault, taxonomy.id);
+      const terms = await taxonomyService.listTerms(vault, taxonomy.id);
       res.send(200, terms);
     } catch (err: unknown) {
       const error = err instanceof Error ? err.message : 'An unknown error occurred';
