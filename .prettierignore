@@ -1,0 +1,18 @@
+# Dependencies
+node_modules
+dist
+build
+
+# Database files
+*.db
+*.db-journal
+
+# Generated files
+*.generated.*
+
+# Package files
+package-lock.json
+yarn.lock
+
+# SQL files (to preserve formatting)
+*.sql
