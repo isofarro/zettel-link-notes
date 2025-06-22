@@ -2,6 +2,10 @@ import * as restify from 'restify';
 import corsMiddleware from 'restify-cors-middleware2';
 import { notesRoutes } from './routes/notes';
 import { taxonomyRoutes } from './routes/taxonomy';
+import { vaultRoutes } from './routes/vaults';
+import { VaultManager } from './db';
+import { NoteRepository } from './repositories/noteRepository';
+import { TaxonomyRepository } from './repositories/taxonomyRepository';
 
 const server = restify.createServer({
   name: 'zettel-link-notes-api',
@@ -20,16 +24,18 @@ server.pre(cors.preflight);
 server.use(cors.actual);
 server.use(restify.plugins.queryParser());
 server.use(restify.plugins.bodyParser());
+server.use(restify.plugins.acceptParser(server.acceptable));
+server.use(restify.plugins.fullResponse());
 
-// Routes
-notesRoutes(server);
-taxonomyRoutes(server);
+// Initialize vault manager and repositories
+const vaultManager = new VaultManager();
+const noteRepo = new NoteRepository(vaultManager);
+const taxonomyRepo = new TaxonomyRepository(vaultManager);
 
-// Basic health check endpoint
-server.get('/_health', (req: restify.Request, res: restify.Response, next: restify.Next) => {
-  res.send(200, { status: 'ok' });
-  return next();
-});
+// Routes - register vault routes first for proper matching
+vaultRoutes(server, vaultManager, noteRepo);
+notesRoutes(server, noteRepo);
+taxonomyRoutes(server, taxonomyRepo);
 
 // Start server
 const PORT = process.env.PORT || 3000;

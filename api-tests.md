@@ -1,8 +1,56 @@
 # API Tests for Zettel Link Notes
 
-## Health Check
+## Vault Operations
+
+### List Available Vaults
 ```bash
-curl http://localhost:3000/_health
+curl http://localhost:3000/
+```
+
+Expected response:
+```json
+[
+  {
+    "name": "test",
+    "url": "http://localhost:3000/test/"
+  }
+]
+```
+
+### Create a New Vault
+```bash
+curl -X POST http://localhost:3000/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "research"
+  }'
+```
+
+Expected response:
+```json
+{
+  "name": "research",
+  "url": "http://localhost:3000/research/"
+}
+```
+
+### Get Vault Details
+```bash
+curl http://localhost:3000/test/
+```
+
+Expected response:
+```json
+{
+  "name": "test",
+  "notes": [
+    {
+      "zettel_id": "202312241523",
+      "title": "My First Note",
+      "created_at": "2023-12-24T15:23:00.000Z"
+    }
+  ]
+}
 ```
 
 ## Taxonomy Operations

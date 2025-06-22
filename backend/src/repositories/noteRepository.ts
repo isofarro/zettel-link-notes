@@ -73,6 +73,32 @@ export class NoteRepository {
     });
   }
 
+  async listNotes(
+    vaultName: string
+  ): Promise<Array<Omit<Note, 'id' | 'revision_id' | 'content' | 'updated_at' | 'deleted_at'>>> {
+    const db = await this.getDb(vaultName);
+    return new Promise((resolve, reject) => {
+      db.all(
+        `
+        SELECT zettel_id, title, created_at
+        FROM notes
+        WHERE deleted_at IS NULL
+        ORDER BY created_at DESC
+        `,
+        [],
+        (
+          err,
+          rows: Array<
+            Omit<Note, 'id' | 'revision_id' | 'content' | 'updated_at' | 'deleted_at'>
+          > | null
+        ) => {
+          if (err) reject(err);
+          resolve(rows || []);
+        }
+      );
+    });
+  }
+
   async updateNote(vaultName: string, note: Note): Promise<boolean> {
     const db = await this.getDb(vaultName);
     return new Promise((resolve, reject) => {
