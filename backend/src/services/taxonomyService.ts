@@ -8,7 +8,7 @@ export class TaxonomyService {
     const taxonomyId = await this.taxonomyRepo.createTaxonomy(vaultName, {
       name,
       description,
-      slug
+      slug,
     });
     return this.taxonomyRepo.getTaxonomyBySlug(vaultName, slug);
   }
@@ -27,7 +27,7 @@ export class TaxonomyService {
       taxonomy_id: taxonomyId,
       name,
       description,
-      slug
+      slug,
     });
     const terms = await this.listTerms(vaultName, taxonomyId);
     return terms.find(term => term.id === termId);

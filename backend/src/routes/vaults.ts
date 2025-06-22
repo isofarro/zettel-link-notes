@@ -1,11 +1,7 @@
 import * as restify from 'restify';
 import { VaultService } from '../services/vaultService';
 
-export function vaultRoutes(
-  server: restify.Server,
-  vaultService: VaultService
-) {
-
+export function vaultRoutes(server: restify.Server, vaultService: VaultService) {
   // List available vaults
   server.get(
     { path: '/', name: 'listVaults' },
