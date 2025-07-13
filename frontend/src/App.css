@@ -9,12 +9,14 @@
   padding: 1rem;
   color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 2rem;
 }
 
 .App-header nav {
   display: flex;
   gap: 1rem;
-  margin-bottom: 1rem;
 }
 
 .nav-link {

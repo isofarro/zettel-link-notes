@@ -10,12 +10,12 @@ function App() {
     <Router>
       <div className="App">
         <header className="App-header">
+          <h1>Zettel Link Notes</h1>
           <nav>
             <Link to="/" className="nav-link">
               Vaults
             </Link>
           </nav>
-          <h1>Zettel Link Notes</h1>
         </header>
 
         <main className="App-main">
