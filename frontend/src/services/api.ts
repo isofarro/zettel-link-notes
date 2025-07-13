@@ -3,7 +3,10 @@ import { Note, Taxonomy, TaxonomyTerm } from '../types';
 const API_BASE = '/api';
 
 class ApiService {
-  private async request<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  private async request<T>(
+    endpoint: string,
+    options?: RequestInit
+  ): Promise<T> {
     const response = await fetch(`${API_BASE}${endpoint}`, {
       headers: {
         'Content-Type': 'application/json',
@@ -36,7 +39,10 @@ class ApiService {
   }
 
   // Note endpoints
-  async createNote(vaultName: string, note: { title: string; content: string }) {
+  async createNote(
+    vaultName: string,
+    note: { title: string; content: string }
+  ) {
     return this.request<Note>(`/${vaultName}/notes`, {
       method: 'POST',
       body: JSON.stringify(note),
@@ -47,7 +53,11 @@ class ApiService {
     return this.request<Note>(`/${vaultName}/notes/${zettelId}`);
   }
 
-  async updateNote(vaultName: string, zettelId: string, note: { title: string; content: string }) {
+  async updateNote(
+    vaultName: string,
+    zettelId: string,
+    note: { title: string; content: string }
+  ) {
     return this.request<Note>(`/${vaultName}/notes/${zettelId}`, {
       method: 'PUT',
       body: JSON.stringify(note),
@@ -59,7 +69,10 @@ class ApiService {
     return this.request<Taxonomy[]>(`/${vaultName}/taxonomies`);
   }
 
-  async createTaxonomy(vaultName: string, taxonomy: { name: string; description?: string }) {
+  async createTaxonomy(
+    vaultName: string,
+    taxonomy: { name: string; description?: string }
+  ) {
     return this.request<Taxonomy>(`/${vaultName}/taxonomies`, {
       method: 'POST',
       body: JSON.stringify(taxonomy),
@@ -71,14 +84,23 @@ class ApiService {
   }
 
   async getTaxonomyTerms(vaultName: string, taxonomySlug: string) {
-    return this.request<TaxonomyTerm[]>(`/${vaultName}/taxonomies/${taxonomySlug}/terms`);
+    return this.request<TaxonomyTerm[]>(
+      `/${vaultName}/taxonomies/${taxonomySlug}/terms`
+    );
   }
 
-  async createTaxonomyTerm(vaultName: string, taxonomySlug: string, term: { name: string; description?: string }) {
-    return this.request<TaxonomyTerm>(`/${vaultName}/taxonomies/${taxonomySlug}/terms`, {
-      method: 'POST',
-      body: JSON.stringify(term),
-    });
+  async createTaxonomyTerm(
+    vaultName: string,
+    taxonomySlug: string,
+    term: { name: string; description?: string }
+  ) {
+    return this.request<TaxonomyTerm>(
+      `/${vaultName}/taxonomies/${taxonomySlug}/terms`,
+      {
+        method: 'POST',
+        body: JSON.stringify(term),
+      }
+    );
   }
 }
 

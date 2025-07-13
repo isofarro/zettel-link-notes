@@ -50,12 +50,8 @@ const VaultList: React.FC = () => {
   return (
     <div>
       <h2>Vaults</h2>
-      
-      {error && (
-        <div className="error">
-          {error}
-        </div>
-      )}
+
+      {error && <div className="error">{error}</div>}
 
       <div className="card">
         <h3>Create New Vault</h3>
@@ -72,8 +68,8 @@ const VaultList: React.FC = () => {
               disabled={creating}
             />
           </div>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="button"
             disabled={creating || !newVaultName.trim()}
           >
@@ -87,15 +83,15 @@ const VaultList: React.FC = () => {
           <div key={vault.name} className="card">
             <h3>{vault.name}</h3>
             <div style={{ marginTop: '1rem' }}>
-              <Link 
-                to={`/vault/${vault.name}`} 
+              <Link
+                to={`/vault/${vault.name}`}
                 className="button"
                 style={{ marginRight: '0.5rem' }}
               >
                 Open Vault
               </Link>
-              <Link 
-                to={`/vault/${vault.name}/new-note`} 
+              <Link
+                to={`/vault/${vault.name}/new-note`}
                 className="button button-secondary"
               >
                 New Note

@@ -6,11 +6,13 @@ import { Taxonomy, TaxonomyTerm } from '../types';
 const TaxonomyManager: React.FC = () => {
   const { vaultName } = useParams<{ vaultName: string }>();
   const [taxonomies, setTaxonomies] = useState<Taxonomy[]>([]);
-  const [selectedTaxonomy, setSelectedTaxonomy] = useState<Taxonomy | null>(null);
+  const [selectedTaxonomy, setSelectedTaxonomy] = useState<Taxonomy | null>(
+    null
+  );
   const [terms, setTerms] = useState<TaxonomyTerm[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Form states
   const [newTaxonomyName, setNewTaxonomyName] = useState('');
   const [newTaxonomyDescription, setNewTaxonomyDescription] = useState('');
@@ -40,7 +42,9 @@ const TaxonomyManager: React.FC = () => {
       setTaxonomies(taxonomyList);
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load taxonomies');
+      setError(
+        err instanceof Error ? err.message : 'Failed to load taxonomies'
+      );
     } finally {
       setLoading(false);
     }
@@ -49,7 +53,10 @@ const TaxonomyManager: React.FC = () => {
   const loadTerms = async (taxonomySlug: string) => {
     if (!vaultName) return;
     try {
-      const termList = await apiService.getTaxonomyTerms(vaultName, taxonomySlug);
+      const termList = await apiService.getTaxonomyTerms(
+        vaultName,
+        taxonomySlug
+      );
       setTerms(termList);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load terms');
@@ -64,14 +71,16 @@ const TaxonomyManager: React.FC = () => {
       setCreating(true);
       const taxonomy = await apiService.createTaxonomy(vaultName, {
         name: newTaxonomyName.trim(),
-        description: newTaxonomyDescription.trim() || undefined
+        description: newTaxonomyDescription.trim() || undefined,
       });
       setNewTaxonomyName('');
       setNewTaxonomyDescription('');
       await loadTaxonomies();
       setSelectedTaxonomy(taxonomy);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create taxonomy');
+      setError(
+        err instanceof Error ? err.message : 'Failed to create taxonomy'
+      );
     } finally {
       setCreating(false);
     }
@@ -85,7 +94,7 @@ const TaxonomyManager: React.FC = () => {
       setCreating(true);
       await apiService.createTaxonomyTerm(vaultName, selectedTaxonomy.slug, {
         name: newTermName.trim(),
-        description: newTermDescription.trim() || undefined
+        description: newTermDescription.trim() || undefined,
       });
       setNewTermName('');
       setNewTermDescription('');
@@ -104,14 +113,12 @@ const TaxonomyManager: React.FC = () => {
   return (
     <div>
       <h2>Taxonomy Manager</h2>
-      
-      {error && (
-        <div className="error">
-          {error}
-        </div>
-      )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+      {error && <div className="error">{error}</div>}
+
+      <div
+        style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}
+      >
         {/* Taxonomies Section */}
         <div>
           <div className="card">
@@ -130,7 +137,9 @@ const TaxonomyManager: React.FC = () => {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="taxonomyDescription">Description (optional):</label>
+                <label htmlFor="taxonomyDescription">
+                  Description (optional):
+                </label>
                 <textarea
                   id="taxonomyDescription"
                   className="textarea"
@@ -141,8 +150,8 @@ const TaxonomyManager: React.FC = () => {
                   style={{ minHeight: '100px' }}
                 />
               </div>
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="button"
                 disabled={creating || !newTaxonomyName.trim()}
               >
@@ -158,20 +167,32 @@ const TaxonomyManager: React.FC = () => {
             ) : (
               <div>
                 {taxonomies.map((taxonomy) => (
-                  <div 
-                    key={taxonomy.id} 
+                  <div
+                    key={taxonomy.id}
                     className={`card ${selectedTaxonomy?.id === taxonomy.id ? 'selected' : ''}`}
-                    style={{ 
+                    style={{
                       cursor: 'pointer',
-                      backgroundColor: selectedTaxonomy?.id === taxonomy.id ? '#e3f2fd' : 'white',
-                      border: selectedTaxonomy?.id === taxonomy.id ? '2px solid #61dafb' : '1px solid #ddd'
+                      backgroundColor:
+                        selectedTaxonomy?.id === taxonomy.id
+                          ? '#e3f2fd'
+                          : 'white',
+                      border:
+                        selectedTaxonomy?.id === taxonomy.id
+                          ? '2px solid #61dafb'
+                          : '1px solid #ddd',
                     }}
                     onClick={() => setSelectedTaxonomy(taxonomy)}
                   >
                     <h4 style={{ margin: '0 0 0.5rem 0' }}>{taxonomy.name}</h4>
-                    <p style={{ margin: '0', color: '#666', fontSize: '0.9rem' }}>Slug: {taxonomy.slug}</p>
+                    <p
+                      style={{ margin: '0', color: '#666', fontSize: '0.9rem' }}
+                    >
+                      Slug: {taxonomy.slug}
+                    </p>
                     {taxonomy.description && (
-                      <p style={{ margin: '0.5rem 0 0 0', color: '#555' }}>{taxonomy.description}</p>
+                      <p style={{ margin: '0.5rem 0 0 0', color: '#555' }}>
+                        {taxonomy.description}
+                      </p>
                     )}
                   </div>
                 ))}
@@ -200,7 +221,9 @@ const TaxonomyManager: React.FC = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="termDescription">Description (optional):</label>
+                    <label htmlFor="termDescription">
+                      Description (optional):
+                    </label>
                     <textarea
                       id="termDescription"
                       className="textarea"
@@ -211,8 +234,8 @@ const TaxonomyManager: React.FC = () => {
                       style={{ minHeight: '100px' }}
                     />
                   </div>
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     className="button"
                     disabled={creating || !newTermName.trim()}
                   >
@@ -230,9 +253,19 @@ const TaxonomyManager: React.FC = () => {
                     {terms.map((term) => (
                       <div key={term.id} className="card">
                         <h4 style={{ margin: '0 0 0.5rem 0' }}>{term.name}</h4>
-                        <p style={{ margin: '0', color: '#666', fontSize: '0.9rem' }}>Slug: {term.slug}</p>
+                        <p
+                          style={{
+                            margin: '0',
+                            color: '#666',
+                            fontSize: '0.9rem',
+                          }}
+                        >
+                          Slug: {term.slug}
+                        </p>
                         {term.description && (
-                          <p style={{ margin: '0.5rem 0 0 0', color: '#555' }}>{term.description}</p>
+                          <p style={{ margin: '0.5rem 0 0 0', color: '#555' }}>
+                            {term.description}
+                          </p>
                         )}
                       </div>
                     ))}
@@ -244,7 +277,9 @@ const TaxonomyManager: React.FC = () => {
 
           {!selectedTaxonomy && taxonomies.length > 0 && (
             <div className="card">
-              <p>Select a taxonomy from the left to view and manage its terms.</p>
+              <p>
+                Select a taxonomy from the left to view and manage its terms.
+              </p>
             </div>
           )}
         </div>

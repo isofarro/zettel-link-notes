@@ -4,7 +4,10 @@ import { apiService } from '../services/api';
 import { Note } from '../types';
 
 const NoteEditor: React.FC = () => {
-  const { vaultName, zettelId } = useParams<{ vaultName: string; zettelId?: string }>();
+  const { vaultName, zettelId } = useParams<{
+    vaultName: string;
+    zettelId?: string;
+  }>();
   const navigate = useNavigate();
   const [note, setNote] = useState<Partial<Note>>({ title: '', content: '' });
   const [loading, setLoading] = useState(false);
@@ -20,7 +23,7 @@ const NoteEditor: React.FC = () => {
 
   const loadNote = async () => {
     if (!zettelId || !vaultName) return;
-    
+
     try {
       setLoading(true);
       const noteData = await apiService.getNote(vaultName, zettelId);
@@ -40,10 +43,10 @@ const NoteEditor: React.FC = () => {
     try {
       setSaving(true);
       setError(null);
-      
+
       const noteData = {
         title: note.title.trim(),
-        content: note.content.trim()
+        content: note.content.trim(),
       };
 
       if (isEditing && zettelId) {
@@ -51,7 +54,7 @@ const NoteEditor: React.FC = () => {
       } else {
         await apiService.createNote(vaultName, noteData);
       }
-      
+
       navigate(`/vault/${vaultName}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save note');
@@ -74,18 +77,23 @@ const NoteEditor: React.FC = () => {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h2>{isEditing ? 'Edit Note' : 'Create New Note'} in {vaultName}</h2>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '2rem',
+        }}
+      >
+        <h2>
+          {isEditing ? 'Edit Note' : 'Create New Note'} in {vaultName}
+        </h2>
         <button onClick={handleCancel} className="button button-secondary">
           Cancel
         </button>
       </div>
 
-      {error && (
-        <div className="error">
-          {error}
-        </div>
-      )}
+      {error && <div className="error">{error}</div>}
 
       <div className="card">
         <form onSubmit={handleSave}>
@@ -131,15 +139,15 @@ const NoteEditor: React.FC = () => {
           )}
 
           <div style={{ display: 'flex', gap: '1rem' }}>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="button"
               disabled={saving || !note.title?.trim() || !note.content?.trim()}
             >
-              {saving ? 'Saving...' : (isEditing ? 'Update Note' : 'Create Note')}
+              {saving ? 'Saving...' : isEditing ? 'Update Note' : 'Create Note'}
             </button>
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={handleCancel}
               className="button button-secondary"
               disabled={saving}
@@ -153,9 +161,15 @@ const NoteEditor: React.FC = () => {
       {isEditing && note.created_at && (
         <div className="card" style={{ marginTop: '1rem' }}>
           <h3>Note Information</h3>
-          <p><strong>Created:</strong> {new Date(note.created_at).toLocaleString()}</p>
+          <p>
+            <strong>Created:</strong>{' '}
+            {new Date(note.created_at).toLocaleString()}
+          </p>
           {note.updated_at && note.updated_at !== note.created_at && (
-            <p><strong>Last Updated:</strong> {new Date(note.updated_at).toLocaleString()}</p>
+            <p>
+              <strong>Last Updated:</strong>{' '}
+              {new Date(note.updated_at).toLocaleString()}
+            </p>
           )}
         </div>
       )}

@@ -17,14 +17,16 @@ const VaultDetail: React.FC = () => {
 
   const loadVaultDetails = async () => {
     if (!vaultName) return;
-    
+
     try {
       setLoading(true);
       const vaultDetails = await apiService.getVaultDetails(vaultName);
       setNotes(vaultDetails.notes);
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load vault details');
+      setError(
+        err instanceof Error ? err.message : 'Failed to load vault details'
+      );
     } finally {
       setLoading(false);
     }
@@ -36,7 +38,7 @@ const VaultDetail: React.FC = () => {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
@@ -50,23 +52,29 @@ const VaultDetail: React.FC = () => {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '2rem',
+        }}
+      >
         <h2>Vault: {vaultName}</h2>
         <div className="vault-actions">
           <Link to={`/vault/${vaultName}/new-note`} className="btn btn-primary">
             Create New Note
           </Link>
-          <Link to={`/vault/${vaultName}/taxonomies`} className="btn btn-secondary">
+          <Link
+            to={`/vault/${vaultName}/taxonomies`}
+            className="btn btn-secondary"
+          >
             Manage Taxonomies
           </Link>
         </div>
       </div>
 
-      {error && (
-        <div className="error">
-          {error}
-        </div>
-      )}
+      {error && <div className="error">{error}</div>}
 
       <div className="grid grid-2">
         {notes.map((note) => (
@@ -76,28 +84,34 @@ const VaultDetail: React.FC = () => {
                 {note.title}
               </Link>
             </h3>
-            <p style={{ color: '#666', fontSize: '0.9rem', margin: '0.5rem 0' }}>
+            <p
+              style={{ color: '#666', fontSize: '0.9rem', margin: '0.5rem 0' }}
+            >
               ID: {note.zettel_id}
             </p>
-            <p style={{ color: '#666', fontSize: '0.9rem', margin: '0.5rem 0' }}>
+            <p
+              style={{ color: '#666', fontSize: '0.9rem', margin: '0.5rem 0' }}
+            >
               Created: {formatDate(note.created_at)}
             </p>
             {note.content && (
-              <p style={{ 
-                marginTop: '1rem', 
-                color: '#555',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                display: '-webkit-box',
-                WebkitLineClamp: 3,
-                WebkitBoxOrient: 'vertical'
-              }}>
+              <p
+                style={{
+                  marginTop: '1rem',
+                  color: '#555',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  display: '-webkit-box',
+                  WebkitLineClamp: 3,
+                  WebkitBoxOrient: 'vertical',
+                }}
+              >
                 {note.content.substring(0, 150)}...
               </p>
             )}
             <div style={{ marginTop: '1rem' }}>
-              <Link 
-                to={`/vault/${vaultName}/note/${note.zettel_id}`} 
+              <Link
+                to={`/vault/${vaultName}/note/${note.zettel_id}`}
                 className="button"
               >
                 Edit Note
@@ -109,7 +123,12 @@ const VaultDetail: React.FC = () => {
 
       {notes.length === 0 && !loading && (
         <div className="card">
-          <p>No notes found in this vault. <Link to={`/vault/${vaultName}/new-note`}>Create your first note!</Link></p>
+          <p>
+            No notes found in this vault.{' '}
+            <Link to={`/vault/${vaultName}/new-note`}>
+              Create your first note!
+            </Link>
+          </p>
         </div>
       )}
     </div>
