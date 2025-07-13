@@ -43,9 +43,21 @@ class ApiService {
     vaultName: string,
     note: { title: string; content: string }
   ) {
+    // Generate a timestamp-based zettel_id
+    const now = new Date();
+    const zettel_id = now.getFullYear().toString() +
+      (now.getMonth() + 1).toString().padStart(2, '0') +
+      now.getDate().toString().padStart(2, '0') +
+      now.getHours().toString().padStart(2, '0') +
+      now.getMinutes().toString().padStart(2, '0') +
+      now.getSeconds().toString().padStart(2, '0');
+
     return this.request<Note>(`/${vaultName}/notes`, {
       method: 'POST',
-      body: JSON.stringify(note),
+      body: JSON.stringify({
+        ...note,
+        zettel_id,
+      }),
     });
   }
 
