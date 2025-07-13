@@ -67,7 +67,7 @@ frontend/
 
 The development server is configured to proxy API requests to the backend:
 - Frontend: http://localhost:3001
-- Backend API: http://localhost:3000
+- Backend API: http://localhost:5001
 - API requests to `/api/*` are automatically proxied to the backend
 
 ## Code Quality
