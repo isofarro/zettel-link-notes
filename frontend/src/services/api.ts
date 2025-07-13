@@ -1,6 +1,6 @@
 import { Note, Taxonomy, TaxonomyTerm } from '../types';
 
-const API_BASE = 'http://localhost:3002';
+const API_BASE = 'http://localhost:5001';
 
 class ApiService {
   private async request<T>(endpoint: string, options?: RequestInit): Promise<T> {

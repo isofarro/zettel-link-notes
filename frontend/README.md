@@ -1,103 +1,96 @@
 # Zettel Link Notes Frontend
 
-A React TypeScript frontend for the Zettel Link Notes application.
+A React TypeScript frontend application built with Vite for the Zettel Link Notes project.
 
 ## Features
 
-- **Vault Management**: Create and browse vaults
-- **Note Editor**: Create and edit notes with Markdown support
-- **Taxonomy System**: Manage taxonomies and terms for organizing content
-- **Responsive Design**: Modern, clean UI that works on desktop and mobile
+- ⚡️ **Vite** - Fast build tool and development server
+- ⚛️ **React 18** - Modern React with hooks
+- 🔷 **TypeScript** - Type safety and better developer experience
+- 🎨 **Prettier** - Code formatting
+- 🔍 **ESLint** - Code linting and quality checks
+- 🚀 **Hot Module Replacement** - Instant updates during development
 
-## Getting Started
-
-### Prerequisites
+## Prerequisites
 
 - Node.js (version 16 or higher)
-- npm or yarn
-- Backend server running on `http://localhost:3000`
+- Yarn
 
-### Installation
+## Installation
 
-1. Navigate to the frontend directory:
+1. Install dependencies:
    ```bash
-   cd frontend
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   # or
    yarn install
    ```
 
-3. Start the development server:
+## Available Scripts
+
+- `yarn dev` - Start development server (usually on http://localhost:3001)
+- `yarn build` - Build for production
+- `yarn preview` - Preview production build
+- `yarn lint` - Run ESLint
+- `yarn lint:fix` - Run ESLint and fix issues
+- `yarn format` - Format code with Prettier
+- `yarn format:check` - Check code formatting
+
+## Development
+
+1. Start the development server:
    ```bash
-   npm start
-   # or
-   yarn start
+   yarn dev
    ```
 
-4. Open [http://localhost:3001](http://localhost:3001) to view it in the browser.
+2. Open your browser and navigate to the URL shown in the terminal (usually http://localhost:3001)
 
 ## Project Structure
 
 ```
-src/
-├── components/          # React components
-│   ├── VaultList.tsx   # Vault listing and creation
-│   ├── VaultDetail.tsx # Notes within a vault
-│   ├── NoteEditor.tsx  # Note creation and editing
-│   └── TaxonomyManager.tsx # Taxonomy and term management
-├── services/
-│   └── api.ts          # API service for backend communication
-├── types.ts            # TypeScript type definitions
-├── App.tsx             # Main application component
-├── App.css             # Application styles
-├── index.tsx           # Application entry point
-└── index.css           # Global styles
+frontend/
+├── public/
+│   ├── index.html
+│   └── vite.svg
+├── src/
+│   ├── App.css
+│   ├── App.tsx
+│   ├── index.css
+│   └── main.tsx
+├── .eslintrc.cjs
+├── .prettierrc
+├── .prettierignore
+├── package.json
+├── tsconfig.json
+├── tsconfig.node.json
+└── vite.config.ts
 ```
-
-## Available Scripts
-
-- `npm start` - Runs the app in development mode
-- `npm test` - Launches the test runner
-- `npm run build` - Builds the app for production
-- `npm run eject` - Ejects from Create React App (one-way operation)
 
 ## API Integration
 
-The frontend communicates with the backend API through the `apiService` class in `src/services/api.ts`. The API base URL is configured to proxy requests to `http://localhost:3000` via the `proxy` field in `package.json`.
+The development server is configured to proxy API requests to the backend:
+- Frontend: http://localhost:3001
+- Backend API: http://localhost:3000
+- API requests to `/api/*` are automatically proxied to the backend
 
-## Styling
+## Code Quality
 
-The application uses custom CSS with a modern, clean design. Key styling features:
+- **ESLint**: Configured with TypeScript and React rules
+- **Prettier**: Consistent code formatting
+- **TypeScript**: Strict type checking enabled
 
-- Responsive grid layouts
-- Card-based UI components
-- Consistent color scheme
-- Accessible form controls
+## Next Steps
 
-## Development
+This is a fresh React TypeScript project ready for development. You can now:
 
-### Adding New Components
+1. Copy over existing React components from the previous implementation
+2. Set up routing with React Router
+3. Implement API services
+4. Add styling and UI components
 
-1. Create new component files in `src/components/`
-2. Export the component as default
-3. Import and use in `App.tsx` or other components
+## Build
 
-### API Integration
-
-To add new API endpoints:
-
-1. Add the method to `apiService` in `src/services/api.ts`
-2. Use the method in your components with proper error handling
-3. Update TypeScript types in `src/types.ts` if needed
-
-## Building for Production
+To build for production:
 
 ```bash
-npm run build
+yarn build
 ```
 
-This creates a `build` folder with optimized production files ready for deployment.
+The built files will be in the `dist/` directory.

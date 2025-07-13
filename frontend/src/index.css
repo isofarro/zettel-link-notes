@@ -25,3 +25,7 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+html, body, #root {
+  height: 100%;
+}
