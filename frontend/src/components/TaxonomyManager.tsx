@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { apiService } from '../services/api';
 import { Taxonomy, TaxonomyTerm } from '../types';
 
 const TaxonomyManager: React.FC = () => {
+  const { vaultName } = useParams<{ vaultName: string }>();
   const [taxonomies, setTaxonomies] = useState<Taxonomy[]>([]);
   const [selectedTaxonomy, setSelectedTaxonomy] = useState<Taxonomy | null>(null);
   const [terms, setTerms] = useState<TaxonomyTerm[]>([]);
@@ -18,7 +20,11 @@ const TaxonomyManager: React.FC = () => {
 
   useEffect(() => {
     loadTaxonomies();
-  }, []);
+  }, [vaultName]);
+
+  if (!vaultName) {
+    return <div>Error: No vault specified</div>;
+  }
 
   useEffect(() => {
     if (selectedTaxonomy) {
@@ -27,9 +33,10 @@ const TaxonomyManager: React.FC = () => {
   }, [selectedTaxonomy]);
 
   const loadTaxonomies = async () => {
+    if (!vaultName) return;
     try {
       setLoading(true);
-      const taxonomyList = await apiService.getTaxonomies();
+      const taxonomyList = await apiService.getTaxonomies(vaultName);
       setTaxonomies(taxonomyList);
       setError(null);
     } catch (err) {
@@ -40,8 +47,9 @@ const TaxonomyManager: React.FC = () => {
   };
 
   const loadTerms = async (taxonomySlug: string) => {
+    if (!vaultName) return;
     try {
-      const termList = await apiService.getTaxonomyTerms(taxonomySlug);
+      const termList = await apiService.getTaxonomyTerms(vaultName, taxonomySlug);
       setTerms(termList);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load terms');
@@ -50,11 +58,11 @@ const TaxonomyManager: React.FC = () => {
 
   const handleCreateTaxonomy = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTaxonomyName.trim()) return;
+    if (!newTaxonomyName.trim() || !vaultName) return;
 
     try {
       setCreating(true);
-      const taxonomy = await apiService.createTaxonomy({
+      const taxonomy = await apiService.createTaxonomy(vaultName, {
         name: newTaxonomyName.trim(),
         description: newTaxonomyDescription.trim() || undefined
       });
@@ -71,11 +79,11 @@ const TaxonomyManager: React.FC = () => {
 
   const handleCreateTerm = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTermName.trim() || !selectedTaxonomy) return;
+    if (!newTermName.trim() || !selectedTaxonomy || !vaultName) return;
 
     try {
       setCreating(true);
-      await apiService.createTaxonomyTerm(selectedTaxonomy.slug, {
+      await apiService.createTaxonomyTerm(vaultName, selectedTaxonomy.slug, {
         name: newTermName.trim(),
         description: newTermDescription.trim() || undefined
       });

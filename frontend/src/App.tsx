@@ -12,7 +12,6 @@ function App() {
         <header className="App-header">
           <nav>
             <Link to="/" className="nav-link">Vaults</Link>
-            <Link to="/taxonomies" className="nav-link">Taxonomies</Link>
           </nav>
           <h1>Zettel Link Notes</h1>
         </header>
@@ -23,7 +22,7 @@ function App() {
             <Route path="/vault/:vaultName" element={<VaultDetail />} />
             <Route path="/vault/:vaultName/note/:zettelId" element={<NoteEditor />} />
             <Route path="/vault/:vaultName/new-note" element={<NoteEditor />} />
-            <Route path="/taxonomies" element={<TaxonomyManager />} />
+            <Route path="/vault/:vaultName/taxonomies" element={<TaxonomyManager />} />
           </Routes>
         </main>
       </div>

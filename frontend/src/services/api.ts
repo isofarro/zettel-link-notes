@@ -54,28 +54,28 @@ class ApiService {
     });
   }
 
-  // Taxonomy endpoints
-  async getTaxonomies() {
-    return this.request<Taxonomy[]>('/taxonomies');
+  // Taxonomy endpoints (vault-scoped)
+  async getTaxonomies(vaultName: string) {
+    return this.request<Taxonomy[]>(`/${vaultName}/taxonomies`);
   }
 
-  async createTaxonomy(taxonomy: { name: string; description?: string }) {
-    return this.request<Taxonomy>('/taxonomies', {
+  async createTaxonomy(vaultName: string, taxonomy: { name: string; description?: string }) {
+    return this.request<Taxonomy>(`/${vaultName}/taxonomies`, {
       method: 'POST',
       body: JSON.stringify(taxonomy),
     });
   }
 
-  async getTaxonomy(slug: string) {
-    return this.request<Taxonomy>(`/taxonomies/${slug}`);
+  async getTaxonomy(vaultName: string, slug: string) {
+    return this.request<Taxonomy>(`/${vaultName}/taxonomies/${slug}`);
   }
 
-  async getTaxonomyTerms(taxonomySlug: string) {
-    return this.request<TaxonomyTerm[]>(`/taxonomies/${taxonomySlug}/terms`);
+  async getTaxonomyTerms(vaultName: string, taxonomySlug: string) {
+    return this.request<TaxonomyTerm[]>(`/${vaultName}/taxonomies/${taxonomySlug}/terms`);
   }
 
-  async createTaxonomyTerm(taxonomySlug: string, term: { name: string; description?: string }) {
-    return this.request<TaxonomyTerm>(`/taxonomies/${taxonomySlug}/terms`, {
+  async createTaxonomyTerm(vaultName: string, taxonomySlug: string, term: { name: string; description?: string }) {
+    return this.request<TaxonomyTerm>(`/${vaultName}/taxonomies/${taxonomySlug}/terms`, {
       method: 'POST',
       body: JSON.stringify(term),
     });

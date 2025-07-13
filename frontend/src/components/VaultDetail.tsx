@@ -52,9 +52,14 @@ const VaultDetail: React.FC = () => {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h2>Vault: {vaultName}</h2>
-        <Link to={`/vault/${vaultName}/new-note`} className="button">
-          New Note
-        </Link>
+        <div className="vault-actions">
+          <Link to={`/vault/${vaultName}/new-note`} className="btn btn-primary">
+            Create New Note
+          </Link>
+          <Link to={`/vault/${vaultName}/taxonomies`} className="btn btn-secondary">
+            Manage Taxonomies
+          </Link>
+        </div>
       </div>
 
       {error && (
